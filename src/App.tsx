@@ -6,6 +6,7 @@ import Dashboard from './pages/Dashboard.tsx';
 import Forecast from './pages/Forecast.tsx';
 import Historical from './pages/Historical.tsx';
 import Marine from './pages/Marine.tsx';
+import Welcome from './pages/Welcome.tsx';
 import './index.css';
 
 export interface AppState {
@@ -13,8 +14,8 @@ export interface AppState {
 }
 
 const App: React.FC = () => {
-  // Global state across pages (or we can pass it via context/props)
-  const [currentLocation, setCurrentLocation] = useState<string>('New York');
+  // Global state across pages
+  const [currentLocation, setCurrentLocation] = useState<string>('');
 
   const handleSearch = (query: string) => {
     setCurrentLocation(query);
@@ -39,13 +40,17 @@ const App: React.FC = () => {
           </header>
 
           <div className="page-container" style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-            <Routes>
-              <Route path="/" element={<Dashboard locationQuery={currentLocation} />} />
-              <Route path="/forecast" element={<Forecast locationQuery={currentLocation} />} />
-              <Route path="/historical" element={<Historical locationQuery={currentLocation} />} />
-              <Route path="/marine" element={<Marine locationQuery={currentLocation} />} />
-              <Route path="*" element={<Navigate to="/" replace />} />
-            </Routes>
+            {!currentLocation ? (
+              <Welcome onLocationSelect={handleSearch} />
+            ) : (
+              <Routes>
+                <Route path="/" element={<Dashboard locationQuery={currentLocation} />} />
+                <Route path="/forecast" element={<Forecast locationQuery={currentLocation} />} />
+                <Route path="/historical" element={<Historical locationQuery={currentLocation} />} />
+                <Route path="/marine" element={<Marine locationQuery={currentLocation} />} />
+                <Route path="*" element={<Navigate to="/" replace />} />
+              </Routes>
+            )}
           </div>
         </main>
       </div>
